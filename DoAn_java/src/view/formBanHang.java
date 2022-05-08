@@ -659,7 +659,36 @@ public class formBanHang extends javax.swing.JInternalFrame {
         NumberFormat VNDFormat = NumberFormat.getCurrencyInstance(VN);
         txtTongTien.setText(VNDFormat.format(tongTien));
     }//GEN-LAST:event_btnThemActionPerformed
-
+    private int laySoLuongTonTheoMaLK(int maLK){
+        int ma=0;
+        try{
+            conn=KetNoiCSDL();
+            String sql="select SoLuongTon from LinhKien where MaLinhKien=?";
+            ps=conn.prepareStatement(sql);
+            ps.setInt(1, maLK);
+            rs=ps.executeQuery();
+            while(rs.next()){
+                ma=rs.getInt("SoLuongTon");
+                return ma;
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return ma;
+    }
+    private void truSoLuongSauKhiBan(int maLK, int soLuong){
+        try{
+            conn=KetNoiCSDL();
+            String sql="update LinhKien set SoLuongTon=SoLuongTon-? where MaLinhKien=?";
+            ps=conn.prepareStatement(sql);
+            ps.setInt(1, soLuong);
+            ps.setInt(2, maLK);
+            ps.executeUpdate(); 
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
     private void btnThanhToanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThanhToanActionPerformed
         // TODO add your handling code here:
         int rowCount = tblHoaDon.getRowCount();
@@ -670,15 +699,27 @@ public class formBanHang extends javax.swing.JInternalFrame {
             int maNV = LayMaNhanVienTheoTen(cboTenNV.getSelectedItem().toString());
             int maKH = LayMaKhachHangTheoTen(cboTenKH.getSelectedItem().toString());
             long tongTien = tinhTongTien();
+            
+            for (int i = 0; i < rowCount; i++) {
+                int maLK=Integer.parseInt(tblHoaDon.getValueAt(i, 1).toString());
+                int soLuongBan=Integer.parseInt(tblHoaDon.getValueAt(i, 3).toString());
+                int soLuongton=laySoLuongTonTheoMaLK(maLK);
+                if(soLuongBan>soLuongton){
+                    JOptionPane.showMessageDialog(rootPane, "So luong ton khong du de ban: "+soLuongton);
+                    return;
+                }
+            }
+            
             themHoaDon(maKH, maNV, tongTien);
             int maHD = layMaHoaDon();
             for (int i = 0; i < rowCount; i++) {
                 String tenLK = tblHoaDon.getValueAt(i, 0).toString();
                 int maLK = Integer.parseInt(tblHoaDon.getValueAt(i, 1).toString());
                 long giaBan = Long.parseLong(tblHoaDon.getValueAt(i, 2).toString());
-                int soLuong = Integer.parseInt(tblHoaDon.getValueAt(i, 3).toString());
+                int soLuongBan = Integer.parseInt(tblHoaDon.getValueAt(i, 3).toString());
                 long thanhTien = Long.parseLong(tblHoaDon.getValueAt(i, 4).toString());
-                themCTHD(maHD, maLK, tenLK, giaBan, soLuong, thanhTien);
+                themCTHD(maHD, maLK, tenLK, giaBan, soLuongBan, thanhTien);
+                truSoLuongSauKhiBan(maLK, soLuongBan);
             }
             dtm.setRowCount(0);
             txtGiaBan.setText("");
