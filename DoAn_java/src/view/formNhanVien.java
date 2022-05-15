@@ -564,7 +564,7 @@ public class formNhanVien extends javax.swing.JInternalFrame {
             }
 
             conn = ConnectToServer();
-            String sql = "insert into NHANVIEN(HoTen,DiaChi,SDT,NamSinh,GioiTinh,MaChucVu,TaiKhoan,MatKhau,DaXoa) values(?,?,?,?,?,?,?,?,?)";
+            String sql = "insert into NHANVIEN(HoTen,DiaCHi,SDT,NamSinh,GioiTinh,MaChucVu,TaiKhoan,MatKhau,DaXoa) values(?,?,?,?,?,?,?,?,?)";
             ps = conn.prepareStatement(sql);
 
             ps.setString(1, txtHoTen.getText());
@@ -572,7 +572,7 @@ public class formNhanVien extends javax.swing.JInternalFrame {
             ps.setString(3, txtSDT.getText());
             ps.setString(4, txtNamSinh.getText());
             ps.setString(5, txtGioiTinh.getText());
-            // ps.setString(6, txtMaChucVu.getText());
+            ps.setInt(6, cbbMaCV.getSelectedIndex());
             ps.setString(7, txtTaiKhoan.getText());
             ps.setString(8, txtMatKhau.getText());
 
