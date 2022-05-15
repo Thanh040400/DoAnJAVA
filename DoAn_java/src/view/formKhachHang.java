@@ -166,6 +166,11 @@ public class formKhachHang extends javax.swing.JInternalFrame {
 
         btnThem.setFont(new java.awt.Font("Arial", 0, 20)); // NOI18N
         btnThem.setText("Thêm");
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemActionPerformed(evt);
+            }
+        });
 
         btnCapNhat.setFont(new java.awt.Font("Arial", 0, 20)); // NOI18N
         btnCapNhat.setText("Cập nhật");
@@ -505,6 +510,12 @@ public class formKhachHang extends javax.swing.JInternalFrame {
             e.printStackTrace();
         }
     }//GEN-LAST:event_btnLuuActionPerformed
+
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
+        // TODO add your handling code here:
+         refresh();
+        hienThiDuLieu();
+    }//GEN-LAST:event_btnThemActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -51,7 +51,7 @@ public class formLoaiLinhKien extends javax.swing.JInternalFrame {
     public void hienThiDuLieu() {
         try {
             conn = ConnectToServer();
-            String sql = "select MaLoaiLinhKien , TenLoaiLinhKien from LoaiLinhKien";
+            String sql = "select * from LoaiLinhKien where DaXoa=0";
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
 
@@ -199,9 +199,19 @@ public class formLoaiLinhKien extends javax.swing.JInternalFrame {
 
         btnThem.setFont(new java.awt.Font("Arial", 0, 20)); // NOI18N
         btnThem.setText("Thêm");
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemActionPerformed(evt);
+            }
+        });
 
         btnCapNhat.setFont(new java.awt.Font("Arial", 0, 20)); // NOI18N
         btnCapNhat.setText("Cập nhật");
+        btnCapNhat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCapNhatActionPerformed(evt);
+            }
+        });
 
         btnXoa.setFont(new java.awt.Font("Arial", 0, 20)); // NOI18N
         btnXoa.setText("Xóa");
@@ -213,6 +223,11 @@ public class formLoaiLinhKien extends javax.swing.JInternalFrame {
 
         btnLuu.setFont(new java.awt.Font("Arial", 0, 20)); // NOI18N
         btnLuu.setText("Lưu");
+        btnLuu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLuuActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -295,9 +310,9 @@ public class formLoaiLinhKien extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn vào dòng cần hiển thị");
                 return;
             } else {
-                // txtMaNV.setText(TableNhanVien.getValueAt(row, 0).toString());
-                txtMaLLK.setText(TableLoaiLK.getValueAt(row, 1).toString());
-                txtTenLLK.setText(TableLoaiLK.getValueAt(row, 2).toString());
+
+                txtMaLLK.setText(TableLoaiLK.getValueAt(row, 0).toString());
+                txtTenLLK.setText(TableLoaiLK.getValueAt(row, 1).toString());
 
             }
         } catch (Exception e) {
@@ -312,9 +327,7 @@ public class formLoaiLinhKien extends javax.swing.JInternalFrame {
             tableModel.setRowCount(0);
             conn = ConnectToServer();
 
-            String sql = "select  TenLoaiLinhKien , a.MaLoaiLinhKien"
-            +"from LoaiLinhKien a ,LinhKien b"
-            +"where a.MaLoaiLinhKien=b.MaLoaiLinhKien";
+            String sql = "select * from LoaiLinhKien where DaXoa=0 and  ";
 
             if (txtTimKiem.getText().equals("")) {
                 JOptionPane.showMessageDialog(this, "Bạn chưa nhập tên loại linh kiện ?");
@@ -359,7 +372,7 @@ public class formLoaiLinhKien extends javax.swing.JInternalFrame {
         try {
             int maLK = Integer.parseInt(TableLoaiLK.getValueAt(row, 0).toString());
             conn = ConnectToServer();
-            String sql = "update LoaiLinhKien where MaLoaiLinhKien = ? ";
+            String sql = "update LoaiLinhKien set DaXoa = 1 where MaLoaiLinhKien = ? ";
             ps = conn.prepareStatement(sql);
             ps.setInt(1, maLK);
             ps.executeUpdate();
@@ -374,6 +387,67 @@ public class formLoaiLinhKien extends javax.swing.JInternalFrame {
             e.printStackTrace();
         }
     }//GEN-LAST:event_btnXoaActionPerformed
+
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
+        // TODO add your handling code here:
+        refresh();
+        hienThiDuLieu();
+    }//GEN-LAST:event_btnThemActionPerformed
+
+    private void btnCapNhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCapNhatActionPerformed
+        // TODO add your handling code here:
+        int row = TableLoaiLK.getSelectedRow();
+
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Bạn chưa chọn loại linh kiện trong bảng!!!");
+            return;
+        }
+        if (JOptionPane.showConfirmDialog(this, "Bạn có muốn cập nhật loại linh kiện này không ?") == JOptionPane.NO_OPTION) {
+            return;
+        }
+        try {
+            conn = ConnectToServer();
+            String sql = "update LoaiLinhKien set TenLoaiLinhKien = ? where MaLoaiLinhKien = ? and daxoa=0 ";
+            ps = conn.prepareStatement(sql);
+
+            ps.setString(1, txtTenLLK.getText());
+            ps.setInt(2, Integer.parseInt(tableModel.getValueAt(row, 0).toString()));
+
+            ps.executeUpdate();
+            JOptionPane.showMessageDialog(rootPane, "Cập nhật Loại linh kiện thành công");
+            hienThiDuLieu();
+            rs.close();
+            ps.close();
+            conn.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnCapNhatActionPerformed
+
+    private void btnLuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLuuActionPerformed
+        // TODO add your handling code here:
+         try {
+            if (txtTenLLK.getText().trim().equals("")) {
+                JOptionPane.showMessageDialog(this, "bạn thiếu thông tin , bạn cần nhập đủ ");
+            } else {
+                conn = ConnectToServer();
+                String sql = " insert into LoaiLinhKien (TenLoaiLinhKien, DaXoa ) values(?,? ) ";
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, txtTenLLK.getText());
+                ps.setInt(2, 0);
+                ps.executeUpdate();
+                JOptionPane.showMessageDialog(rootPane, "lưu Loại linh kiện thành công");
+                hienThiDuLieu();
+                rs.close();
+                ps.close();
+                conn.close();
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnLuuActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
