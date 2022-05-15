@@ -15,7 +15,9 @@ import java.sql.DriverManager;
 public class ConnectToSQL {
     public ConnectToSQL(){
     try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");  
+            
+        
+        
               String connectionUrl = "jdbc:sqlserver://DESKTOP-8I56L51:1433;databaseName=QLLinhKienPC_Laptop_java"; 
               String user = "sa";
               String pass = "123456";
