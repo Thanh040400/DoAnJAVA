@@ -33,7 +33,7 @@ public class formNhanVien extends javax.swing.JInternalFrame {
         BasicInternalFrameUI UI=(BasicInternalFrameUI)this.getUI();
         UI.setNorthPane(null);
         //layGioiTinh_LenCBB();
-        layTenChucVu_LenCBB();
+        
         tableModel = (DefaultTableModel) TableNhanVien.getModel();
         txtHoTen.grabFocus();
         hienThiDuLieu();
@@ -105,27 +105,7 @@ public class formNhanVien extends javax.swing.JInternalFrame {
         TableNhanVien.grabFocus();
     }
 
-    private void layTenChucVu_LenCBB() {
-        try {
-            conn = ConnectToServer();
-            String sql = "select TenChucVu from  CHUCVU";
-            ps = conn.prepareStatement(sql);
-            rs = ps.executeQuery();
-
-            Vector data = new Vector();
-            while (rs.next()) {
-                data.add(rs.getString("TenChucVu"));
-            }
-            DefaultComboBoxModel conBoxModel = new DefaultComboBoxModel(data);
-            cbbMaCV.setModel(conBoxModel);
-            rs.close();
-            ps.close();
-            conn.close();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, e.getMessage());
-            e.printStackTrace();
-        }
-    }
+    
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -333,6 +313,7 @@ public class formNhanVien extends javax.swing.JInternalFrame {
         txtMatKhau.setToolTipText("");
 
         cbbMaCV.setFont(new java.awt.Font("Arial", 0, 20)); // NOI18N
+        cbbMaCV.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Chọn quyền của bạn", "Quản Lý", "Nhân Viên" }));
         cbbMaCV.setToolTipText("");
 
         txtGioiTinh.setFont(new java.awt.Font("Arial", 0, 20)); // NOI18N
@@ -506,7 +487,7 @@ public class formNhanVien extends javax.swing.JInternalFrame {
             ps.setString(3, txtSDT.getText());
             ps.setString(4, txtNamSinh.getText());
             ps.setString(5, txtGioiTinh.getText());
-            ps.setString(6, cbbMaCV.toString());
+            ps.setInt(6, cbbMaCV.getSelectedIndex());
             ps.setString(7, txtTaiKhoan.getText());
             ps.setString(8, txtMatKhau.getText());
 

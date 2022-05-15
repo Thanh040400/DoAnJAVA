@@ -148,7 +148,7 @@ public class formPNH extends javax.swing.JInternalFrame {
     }
 
     private void them_PNH(int maNCC, int maNV, double tongTien) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         Date date = new Date();
         String date1 = formatter.format(date);
         try {
